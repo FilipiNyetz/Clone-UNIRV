@@ -1,4 +1,3 @@
-// src/app/api/mercadopago/route.ts
 import { db } from "@/lib/prisma";
 import { MercadoPagoConfig, Payment } from "mercadopago";
 
@@ -19,7 +18,6 @@ function generateIdempotencyKey() {
 
 const expirationDate = new Date(Date.now() + 30 * 60 * 1000).toISOString();
 
-// 👇 Rota do Mercado Pago para gerar pagamento via PIX
 export async function POST(req: Request) {
     const { data } = await req.json();
 
@@ -36,7 +34,7 @@ export async function POST(req: Request) {
                     number: data.payer.identification.number,
                 },
             },
-            notification_url: `https://clone-unirv-xddh.vercel.app/api/mercadopago/webhook?paymentId=${data.paymentId}`,
+            notification_url: `https://clone-unirv-xddh.vercel.app/api/mercadopago/webhook`,
             date_of_expiration: expirationDate,
         };
 
@@ -47,9 +45,6 @@ export async function POST(req: Request) {
         // Cria o pagamento via Mercado Pago
         const result = await payment.create({ body, requestOptions });
 
-        const qrCode = result.point_of_interaction?.transaction_data?.qr_code;
-
-        // Verifica se o paymentId existe
         if (!result.id) {
             throw new Error("Payment ID não encontrado");
         }
@@ -61,14 +56,17 @@ export async function POST(req: Request) {
                 ticketId: data.ticketId,
                 status: "PENDING",
                 payment: "PIX",
-                paymentId: result.id.toString(), // Usando o paymentId retornado do Mercado Pago
+                paymentId: result.id.toString(), // Aqui usamos o paymentId real
             },
         });
+
+        const qrCode = result.point_of_interaction?.transaction_data?.qr_code;
 
         return new Response(
             JSON.stringify({
                 pix_code: qrCode ?? null,
                 order: newOrder,
+                paymentId: result.id,
             }),
             { status: 200, headers: { "Content-Type": "application/json" } }
         );
