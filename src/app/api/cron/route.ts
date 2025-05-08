@@ -40,6 +40,7 @@ const cronJob = cron.schedule('*/5 * * * *', async () => {
                     where: { id: order.id },
                     data: { status: 'CANCELED' },
                 });
+
                 console.log(`⏰ Pedido ${order.id} cancelado (pagamento expirado)`);
             } else {
                 await db.order.update({

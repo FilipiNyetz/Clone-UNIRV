@@ -70,6 +70,7 @@ model Order {
   id        String      @id @default(cuid())
   userId    String
   user      User        @relation(fields: [userId], references: [id])
+  batchId   String
   ticketId  String
   ticket    Ticket      @relation(fields: [ticketId], references: [id])
   status    OrderStatus

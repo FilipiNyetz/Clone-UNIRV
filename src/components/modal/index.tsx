@@ -49,6 +49,7 @@ export function Modal({ isOpen, onClose, event, isAluno, user, onSuccess }: Moda
                         }
                     },
                     userId: user?.id,  // Enviando o userId do usuário logado
+                    batchId: event?.Batch[0].id,
                     ticketId: event?.Batch[0]?.Tickets[0]?.id,
 
                 }
