@@ -26,7 +26,7 @@ const cronJob = cron.schedule('*/5 * * * *', async () => {
             status: 'PENDING',
             payment: 'PIX',
             createdAt: {
-                lt: new Date(now.getTime() - 30 * 60 * 1000),
+                lt: new Date(now.getTime() - 10 * 60 * 1000),
             },
         },
     });
