@@ -41,6 +41,18 @@ const cronJob = cron.schedule('*/5 * * * *', async () => {
                     data: { status: 'CANCELED' },
                 });
 
+                if (order.batchId) {
+                    await db.batch.update({
+                        where: { id: order.batchId },
+                        data: {
+                            availableTickets: {
+                                increment: 1,
+                            },
+                        },
+                    });
+                    console.log(`🎟️ 1 ingresso devolvido ao lote ${order.batchId}`);
+                }
+
                 console.log(`⏰ Pedido ${order.id} cancelado (pagamento expirado)`);
             } else {
                 await db.order.update({
