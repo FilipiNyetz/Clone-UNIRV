@@ -48,7 +48,12 @@ export async function POST(req: Request) {
         if (!result.id) {
             throw new Error("Payment ID não encontrado");
         }
-
+        console.log("Criando order com:", {
+            userId: data.userId,
+            batchId: data.batchId,
+            ticketId: data.ticketId,
+            paymentId: result.id.toString(),
+        });
         // Após o pagamento ser criado, crie a order no banco
         const newOrder = await db.order.create({
             data: {
